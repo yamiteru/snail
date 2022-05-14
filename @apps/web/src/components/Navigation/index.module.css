@@ -1,0 +1,11 @@
+.nav {
+    @apply h-[85px] p-4 w-full overflow-x-auto flex flex-row;
+
+    &[data-position="top"] {
+        @apply border-b border-b-gray-200 mb-auto;
+    }
+
+    &[data-position="bottom"] {
+        @apply border-t border-t-gray-200 mt-auto;
+    }
+}

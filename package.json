@@ -1,0 +1,27 @@
+{
+  "name": "slowco",
+  "version": "1.0.0",
+  "repository": "https://github.com/yamiteru/slowco.git",
+  "author": "Miroslav Vršecký <office@yamiteru.xyz>",
+  "license": "MIT",
+  "scripts": {
+    "server:start": "ts-node -r tsconfig-paths/register @apps/server/index.ts",
+    "server:dev": "ts-node -r tsconfig-paths/register @apps/server/index.ts"
+  },
+  "dependencies": {
+    "argon2": "^0.28.5",
+    "better-sqlite3": "7.5.1",
+    "dotenv": "16.0.0",
+    "io-ts": "2.2.16",
+    "njwt": "^1.2.0",
+    "tsconfig-paths": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.5.0",
+    "@types/node": "17.0.31",
+    "fp-ts": "2.12.1",
+    "ts-node": "10.7.0",
+    "ts-node-dev": "1.1.8",
+    "typescript": "4.6.4"
+  }
+}

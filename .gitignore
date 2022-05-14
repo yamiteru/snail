@@ -1,0 +1,10 @@
+.code
+.webstorm
+
+.DS_Store
+
+node_modules
+dist
+
+*-error.lock
+*-debug.lock
