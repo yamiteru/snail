@@ -1,7 +1,0 @@
-.button {
-    @apply border-gray-100 bg-gray-100;
-}
-
-.active {
-    @apply border-gray-300 shadow-lg;
-}

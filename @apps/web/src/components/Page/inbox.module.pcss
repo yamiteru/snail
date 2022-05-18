@@ -3,5 +3,9 @@
 }
 
 .content {
-    @apply h-full p-4 bg-gray-100;
+    @apply h-full p-4 bg-gray-100 flex flex-col;
+
+    &[data-scrollable="true"] {
+        @apply overflow-y-auto;
+    }
 }

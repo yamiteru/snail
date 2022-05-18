@@ -1,0 +1,27 @@
+.card {
+    @apply bg-white border border-gray-300 rounded-lg p-6 mb-3;
+
+    &:nth-last-child(1) {
+        @apply mb-0;
+    }
+
+    &[data-draft="true"] {
+        @apply border-dashed;
+
+        .title {
+            @apply text-gray-400;
+        }
+    }
+}
+
+.date {
+    @apply mb-3;
+}
+
+.title {
+    @apply mb-3;
+}
+
+.name {
+    @apply mt-3;
+}

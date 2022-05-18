@@ -1,21 +1,34 @@
 import styles from "./inbox.module.css";
-import caption from "../Typography/Caption/index.module.css";
-import {Component, Setter} from "solid-js";
+import typography from "../../styles/typography.module.css";
+import {Component, Setter, Show} from "solid-js";
 
 type Input = Component<{
 	placeholder: string;
 	setter: Setter<string>;
+	emoji?: string;
+	class?: string;
+	type?: string;
 }>;
 
 const Input: Input = (_) => {
-	return <input
-		class={`${styles.input} ${caption.caption}`}
-		placeholder={_.placeholder}
-		autocomplete={"off"}
-		onChange={(e) => {
-			_.setter(e.currentTarget.value);
-		}}
-	/>
+	return (
+		<div class={styles.wrapper}>
+			<Show when={_.emoji}>
+				<div class={styles.emoji}>{_.emoji}</div>
+			</Show>
+
+			<input
+				class={`${styles.input} ${typography.caption} ${_.class}`}
+				data-emoji={!!_.emoji}
+				placeholder={_.placeholder}
+				autocomplete={"off"}
+				type={_.type || "text"}
+				onChange={(e) => {
+					_.setter(e.currentTarget.value);
+				}}
+			/>
+		</div>
+	);
 };
 
 export default Input;

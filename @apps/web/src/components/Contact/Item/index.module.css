@@ -1,0 +1,7 @@
+.item {
+    @apply py-4 border border-transparent border-b-gray-300;
+}
+
+.title {
+    @apply whitespace-pre;
+}

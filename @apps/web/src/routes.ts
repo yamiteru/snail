@@ -1,21 +1,47 @@
 import {RouteDefinition} from "solid-app-router";
-import LoginPage from "./pages/Login";
 import {lazy} from "solid-js";
-import RegisterPage from "./pages/Register";
-import ForgottenPasswordPage from "./pages/ForgottenPassword";
+import Inbox from "./pages/Inbox";
 
 export const routes: RouteDefinition[] = [
 	{
 		path: "/",
-		component: LoginPage
+		component: Inbox
+	},
+	{
+		path: "/login",
+		component: lazy(() => import("./pages/Login"))
 	},
 	{
 		path: "/register",
-		component: RegisterPage
+		component: lazy(() => import("./pages/Register"))
 	},
 	{
-		path: "/forgotten-password",
-		component: ForgottenPasswordPage
+		path: "/reset",
+		component: lazy(() => import("./pages/Reset"))
+	},
+	{
+		path: "/write",
+		component: lazy(() => import("./pages/Write"))
+	},
+	{
+		path: "/contacts",
+		component: lazy(() => import("./pages/Contacts"))
+	},
+	{
+		path: "/:nick/write",
+		component: lazy(() => import("./pages/Write"))
+	},
+	{
+		path: "/:nick/draft",
+		component: lazy(() => import("./pages/Write"))
+	},
+	{
+		path: "/:nick/:id",
+		component: lazy(() => import("./pages/Read"))
+	},
+	{
+		path: "/:nick",
+		component: lazy(() => import("./pages/Person"))
 	},
 	{
 		path: "**",

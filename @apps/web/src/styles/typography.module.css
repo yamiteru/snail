@@ -1,0 +1,15 @@
+.caption {
+    @apply text-[14px] leading-tight font-normal font-text;
+}
+
+.heading {
+    @apply text-[45px] leading-[1.1] font-extrabold font-display;
+}
+
+.text {
+    @apply text-base leading-tight font-normal font-text;
+}
+
+.title {
+    @apply text-[20px] leading-tight font-extrabold font-display;
+}

@@ -1,0 +1,11 @@
+.list {
+    @apply flex flex-col mb-9;
+}
+
+.title {
+    @apply pb-4 border border-transparent border-b-gray-300;
+}
+
+.items {
+    @apply flex flex-col;
+}

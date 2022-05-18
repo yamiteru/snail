@@ -1,7 +1,0 @@
-.button {
-    @apply px-4 h-full inline-flex items-center rounded-lg duration-300 transition-all ease-in-out border mr-2 whitespace-pre;
-
-    &:nth-last-child(1) {
-        @apply mr-0;
-    }
-}

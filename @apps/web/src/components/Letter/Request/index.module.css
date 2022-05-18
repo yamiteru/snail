@@ -1,0 +1,11 @@
+.request {
+    @apply flex flex-row h-[45px] mt-6;
+}
+
+.button {
+    @apply mr-2;
+
+    &:nth-last-child(1) {
+        @apply mr-0;
+    }
+}

@@ -2,9 +2,10 @@ import styles from "./inbox.module.pcss";
 import {Component, JSX} from "solid-js";
 
 type Page = Component<{
-	top?: Component;
 	children: JSX.Element;
 	bottom: Component;
+	top?: Component;
+	scrollable?: boolean;
 }>;
 
 const Page: Page = (_) => {
@@ -15,7 +16,7 @@ const Page: Page = (_) => {
 		<div class={styles.page}>
 			{Top && <Top />}
 
-			<div class={styles.content}>
+			<div class={styles.content} data-scrollable={_.scrollable}>
 				{_.children}
 			</div>
 

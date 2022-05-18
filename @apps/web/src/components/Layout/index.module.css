@@ -1,0 +1,23 @@
+.layout {
+    @apply h-full w-full items-center flex py-4;
+}
+
+.rows {
+    @apply flex flex-col w-full;
+}
+
+.row {
+    @apply flex flex-row mb-2;
+
+    &:nth-last-child(1) {
+        @apply mb-0;
+    }
+
+    > * {
+        @apply mr-2;
+
+        &:nth-last-child(1) {
+            @apply mr-0;
+        }
+    }
+}
