@@ -54,13 +54,14 @@ const RegisterPage: Component = () => {
 					],
 					[
 						<Input type={"password"} placeholder={"Password"} setter={setPassword} />,
-						<Button disabled={disabled()} outline={"green"}>✅ Register</Button>
+						<Button disabled={disabled()} outline={"green"}>🎉 Register</Button>
+					],
+					[
+						<Checkbox value={accept} setter={setAccept} name={"agree"}>
+							I agree with the terms of service
+						</Checkbox>
 					]
 				]} />
-
-				<Checkbox value={accept} setter={setAccept} name={"agree"}>
-					I agree with the terms of service
-				</Checkbox>
 			</Form>
 		</Page>
 	);

@@ -9,6 +9,7 @@ const NavigationMainBottom: Component = () => {
 			<Button link={"/write"}>✍ Write</Button>,
 			<Button link={"/"}>📨 Inbox</Button>,
 			<Button link={"/contacts"}>👨 Contacts</Button>,
+			<Button link={"/settings"}>🔧 Settings</Button>,
 			<Button link={"/login"}>🚪 Logout</Button>,
 		]}
 	/>

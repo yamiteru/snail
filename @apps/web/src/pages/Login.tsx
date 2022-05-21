@@ -36,7 +36,7 @@ const LoginPage: Component = () => {
 					<Input placeholder={"Nickname"} setter={setNick} />,
 					[
 						<Input placeholder={"Password"} setter={setPassword} type={"password"} />,
-						<Button outline={"green"} disabled={disabled()}>✅ Login</Button>
+						<Button outline={"green"} disabled={disabled()}>🔮 Login</Button>
 					]
 				]} />
 			</Form>

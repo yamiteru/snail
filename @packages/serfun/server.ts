@@ -1,5 +1,4 @@
-import { readFileSync } from "fs";
-import { createSecureServer } from "http2";
+import {createServer} from "http2";
 import {
     HTTP_STATUS_METHOD_NOT_ALLOWED,
     HTTP_STATUS_NOT_FOUND,
@@ -24,10 +23,7 @@ type Options = {
 };
 
 export const server = (api: API, options: Options) => {
-    createSecureServer({
-        key: readFileSync(options.key),
-        cert: readFileSync(options.cert)
-    })
+    createServer()
     .on("stream", async (stream, headers) => {
         try {
             const method = headers[":method"]?.toUpperCase() || null;
@@ -63,6 +59,6 @@ export const server = (api: API, options: Options) => {
         }
     })
     .listen(options.port, () =>
-        console.log(`https://localhost:${options.port}`)
+        console.log(`http://localhost:${options.port}`)
     );
 }

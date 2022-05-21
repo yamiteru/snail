@@ -1,5 +1,5 @@
 .checkbox {
-    @apply flex;
+    @apply w-full flex bg-white border border-gray-200 rounded-lg overflow-hidden p-4;
 }
 
 .input {

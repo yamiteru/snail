@@ -1,5 +1,5 @@
 .layout {
-    @apply h-full w-full items-center flex py-4;
+    @apply h-full w-full items-end flex pt-4;
 }
 
 .rows {

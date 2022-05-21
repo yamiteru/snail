@@ -8,7 +8,7 @@ const NavigationAuthBottom: Component = () => {
 		elements={[
 			<Button link={"/login"}>🔮 Login</Button>,
 			<Button link={"/register"}>🎉 Register</Button>,
-			<Button link={"/reset"}>💡 Forgotten password</Button>,
+			<Button link={"/reset"}>💡 Reset password</Button>,
 		]}
 	/>
 };
