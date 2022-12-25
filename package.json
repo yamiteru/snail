@@ -1,0 +1,53 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"scripts": {
+		"fix:format": "prettier --write \"**/*.ts\"",
+		"fix:lint": "eslint --fix --ext .ts .",
+		"fix": "pnpm fix:lint && pnpm fix:format",
+		"check:format": "prettier --check \"**/*.ts\"",
+		"check:lint": "eslint --ext .ts .",
+		"check": "pnpm check:lint && pnpm check:format",
+		"test:coverage": "jest --collectCoverage --runInBand",
+		"test": "jest --runInBand",
+		"dev": "ts-node -r tsconfig-paths/register --transpile-only src/entry-node.ts",
+		"prisma:generate": "prisma generate",
+		"prisma:migrate:apply": "prisma migrate deploy",
+		"prisma:migrate:create": "prisma migrate dev",
+		"docker:build": "docker-compose build --no-cache",
+		"docker:up": "docker-compose up",
+		"openapi:generate": "ts-node src/openapi.ts"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20221111.1",
+		"@types/cors": "2.8.13",
+		"@types/express": "4.17.15",
+		"@types/jest": "29.2.4",
+		"@types/node": "18.11.17",
+		"@typescript-eslint/eslint-plugin": "5.43.0",
+		"@typescript-eslint/parser": "5.43.0",
+		"dotenv": "16.0.3",
+		"eslint": "8.27.0",
+		"eslint-config-prettier": "8.5.0",
+		"husky": "8.0.2",
+		"jest": "29.3.1",
+		"prettier": "2.7.1",
+		"prisma": "4.8.0",
+		"ts-jest": "29.0.3",
+		"ts-node": "10.9.1",
+		"ts-node-dev": "2.0.0",
+		"tsconfig-paths": "4.1.1",
+		"typescript": "4.9.3",
+		"wrangler": "2.6.2"
+	},
+	"dependencies": {
+		"@faker-js/faker": "7.6.0",
+		"@prisma/client": "4.8.0",
+		"@trpc/server": "10.7.0",
+		"cors": "2.8.5",
+		"express": "4.18.2",
+		"jose": "4.11.1",
+		"trpc-openapi": "1.0.0",
+		"zod": "3.20.2"
+	}
+}
