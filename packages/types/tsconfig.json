@@ -1,0 +1,5 @@
+{
+	"extends": "@snail/tsconfig/tsconfig.core.json",
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}

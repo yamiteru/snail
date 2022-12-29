@@ -1,0 +1,8 @@
+{
+	"extends": "@snail/tsconfig/tsconfig.core.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "WebWorker"]
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}

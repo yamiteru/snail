@@ -1,0 +1,9 @@
+{
+	"extends": "@snail/tsconfig/tsconfig.core.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "WebWorker"],
+		"types": ["cloudflare/worker-types"]
+	},
+	"include": ["src", "tests", "@types"],
+	"exclude": ["node_modules"]
+}

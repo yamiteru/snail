@@ -1,0 +1,17 @@
+{
+	"name": "@snail/utils",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+	"scripts": {
+		"lint": "eslint --fix --ext .ts,.tsx .",
+		"lint:check": "eslint --ext .ts,.tsx ."
+	},
+	"devDependencies": {
+		"@snail/config": "workspace:*",
+		"@snail/tsconfig": "workspace:*",
+		"@snail/types": "workspace:*"
+	},
+	"dependencies": {
+		"jose": "4.11.1"
+	}
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@snail/types",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+	"scripts": {
+		"lint": "eslint --fix --ext .ts,.tsx .",
+		"lint:check": "eslint --ext .ts,.tsx ."
+	},
+  "devDependencies": {
+    "@miniflare/kv": "2.11.0",
+    "@snail/config": "workspace:*",
+    "@snail/tsconfig": "workspace:*"
+  }
+}

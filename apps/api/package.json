@@ -1,0 +1,28 @@
+{
+	"name": "api",
+	"type": "module",
+	"module": "./dist/index.mjs",
+	"scripts": {
+		"dev": "miniflare --debug dist/index.mjs",
+		"dev:remote": "wrangler dev",
+		"build": "node --loader ts-node/esm scripts/build.ts",
+		"deploy": "wrangler publish",
+		"lint": "eslint --fix --ext .ts,.tsx .",
+		"lint:check": "eslint --ext .ts,.tsx ."
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20221111.1",
+		"@snail/config": "workspace:*",
+		"@snail/tsconfig": "workspace:*",
+		"@snail/types": "workspace:*",
+		"esbuild": "0.16.10",
+		"miniflare": "2.11.0",
+		"ts-node": "10.9.1",
+		"typescript": "4.9.4",
+		"wrangler": "2.6.2"
+	},
+	"dependencies": {
+		"@snail/router": "workspace:*",
+		"@snail/utils": "workspace:*"
+	}
+}

@@ -1,0 +1,6 @@
+{
+	"name": "@snail/tsconfig",
+	"files": [
+		"tsconfig.core.json"
+	]
+}

@@ -1,0 +1,20 @@
+name = "slowco"
+main = "dist/index.js"
+compatibility_date = "2022-12-24"
+
+kv_namespaces = [
+  { binding = "KV", id = "c9b1585772bd4c43be23d7d7f95bdb1c" }
+]
+
+[build]
+command = "pnpm build"
+watch_dir = "src"
+
+[miniflare]
+watch = true
+live_reload = true
+kv_persist = true
+cache_persist = "./cache"
+cache = true
+[build.upload]
+format = "modules"
