@@ -1,15 +1,13 @@
 import { beforeAll, expect, it, Nullable } from "vitest";
-import { call, getRandomEmails, getRandomNames, setSendEmail } from "../../src";
+import { call, getRandomEmails, getRandomNames } from "../../src";
 import { code, register } from "../../src/routes/auth";
+import { MockEmail } from "../../src/services/email";
 
 const codes = new Map<string, (value: string) => void>();
 
 beforeAll(() => {
 	(global as any).bindings = getMiniflareBindings();
-	setSendEmail(async (_, data, email) => {
-		codes.get(email)?.(data.loginCode as string);
-		codes.delete(email);
-	});
+	new MockEmail();
 });
 
 setupMiniflareIsolatedStorage()("auth/code", () => {

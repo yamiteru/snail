@@ -1,5 +1,3 @@
-export * from "./key";
-export * from "./email";
-export * from "./tests";
+export * from "./handler";
 export * from "./authorize";
-export * from "./call";
+export * from "./router";

@@ -1,20 +1,23 @@
-import { Handler } from "../../types";
-import { authorize } from "../../utils/authorize";
-import { Inbox } from "../../controllers";
-import { date, email, error, object, string, validate } from "@snail/utils";
+import { authorize, handler } from "@utils";
+import { date, email, error, object, string } from "@snail/utils";
+import { InboxService } from "@services";
 
-const paramsSchema = object({ from: email, date });
-const outputSchema = string;
+export const read = handler(
+	{
+		params: object({ from: email, date }),
+		output: string,
+	},
+	async ({ headers, params }) => {
+		const { from, date } = params();
+		const { me } = await authorize(headers());
+		const inboxService = new InboxService();
 
-export const read: Handler = async ({ headers, params }) => {
-	const { from, date } = validate(paramsSchema, params());
-	const { me } = await authorize(headers());
+		const letter = await inboxService.read(me, from, date);
 
-	const letter = await Inbox.read(me, from, date);
+		error(letter === null, "LETTER_DOES_NOT_EXIST", { from, to: me, date });
 
-	error(letter === null, "LETTER_DOES_NOT_EXIST", { from, to: me, date });
+		await inboxService.drop(me, from, date);
 
-	await Inbox.drop(me, from, date);
-
-	return validate(outputSchema, letter);
-};
+		return letter as string;
+	},
+);

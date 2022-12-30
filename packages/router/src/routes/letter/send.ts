@@ -1,21 +1,27 @@
-import { Handler } from "../../types";
-import { dateKey, email, error, object, string, validate } from "@snail/utils";
-import { Blacklist, Inbox } from "../../controllers";
-import { authorize } from "../../utils/authorize";
+import { dateKey, email, error, object, string } from "@snail/utils";
+import { authorize, handler } from "@utils";
+import { BlacklistService, InboxService } from "@services";
 
-const bodySchema = object({ to: email, content: string });
+export const send = handler(
+	{
+		body: object({ to: email, content: string }),
+	},
+	async ({ body, headers }) => {
+		const { to, content } = await body();
+		const { me } = await authorize(headers());
+		const blacklistService = new BlacklistService();
+		const inboxService = new InboxService();
+		const date = dateKey();
+		const letterFromToday = await inboxService.read(to, me, date);
 
-export const send: Handler = async ({ body, headers }) => {
-	const { to, content } = validate(bodySchema, await body());
-	const { me } = await authorize(headers());
-	const date = dateKey();
-	const letterFromToday = await Inbox.read(to, me, date);
+		error(letterFromToday !== null, "OUT_OF_LETTERS", { from: me, to, date });
 
-	error(letterFromToday !== null, "OUT_OF_LETTERS", { from: me, to, date });
+		const blacklistedUser = await blacklistService.read(to, me);
 
-	const blacklistedUser = await Blacklist.read(to, me);
+		error(!!blacklistedUser, "PERSON_BLACKLISTED", { target: me, by: to });
 
-	error(!!blacklistedUser, "PERSON_BLACKLISTED", { target: me, by: to });
+		await inboxService.create(to, me, date, content);
 
-	await Inbox.create(to, me, date, content);
-};
+		return date;
+	},
+);

@@ -12,3 +12,5 @@ export const randomString = (size: number) => {
 
 	return string;
 };
+
+export const generateLoginCode = () => randomString(6);

@@ -1,9 +1,10 @@
 import { Env } from "@snail/types";
 import { router } from "@snail/router";
-import { getHeaders, searchParams } from "@snail/utils";
+import { LogService } from "@snail/router/src/services/log";
 
 export default {
 	async fetch(request: Request, env: Env) {
+		const logService = new LogService();
 		const url = new URL(request.url);
 
 		try {
@@ -11,12 +12,11 @@ export default {
 
 			const [, a, b] = url.pathname.split("/");
 			const handler = (router as any)?.[a]?.[request.method]?.[b];
-			const output = await (handler as any)({
-				body: request.json,
-				params: () => searchParams(request.url),
-				headers: () => getHeaders(request),
-				env,
-			});
+			const output = await (handler as any)(request, env);
+
+			const x = await logService.info(output);
+
+			console.log(x);
 
 			return new Response(
 				JSON.stringify({
@@ -24,6 +24,10 @@ export default {
 				}),
 			);
 		} catch (e: any) {
+			const x = await logService.error(e);
+
+			console.log(x);
+
 			return new Response(
 				JSON.stringify({
 					error: e,

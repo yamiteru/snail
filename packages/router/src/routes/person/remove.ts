@@ -1,14 +1,16 @@
-import { authorize } from "../../utils";
-import { Blacklist, Inbox, Token } from "../../controllers";
-import { Handler } from "../../types";
+import { authorize, handler } from "@utils";
+import { BlacklistService, InboxService, TokenService } from "@services";
 
-export const remove: Handler = async ({ headers, env: { KV } }) => {
+export const remove = handler({}, async ({ headers, env: { KV } }) => {
 	const { me } = await authorize(headers());
+	const inboxService = new InboxService();
+	const blackboxService = new BlacklistService();
+	const tokenService = new TokenService();
 
 	const lists = await Promise.all([
-		Inbox.list(me),
-		Blacklist.list(me),
-		Token.list(me),
+		inboxService.list(me),
+		blackboxService.list(me),
+		tokenService.list(me),
 	]);
 
 	const promises: Promise<unknown>[] = [];
@@ -22,4 +24,4 @@ export const remove: Handler = async ({ headers, env: { KV } }) => {
 	}
 
 	await Promise.all(promises);
-};
+});

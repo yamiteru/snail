@@ -1,8 +1,9 @@
 import { code, login, register } from "./auth";
 import { list, read, send, unsend } from "./letter";
 import { blacklist, remove, whitelist } from "./person";
+import { createRouter } from "@utils";
 
-export const router = {
+export const router = createRouter({
 	auth: {
 		POST: { register, code, login },
 	},
@@ -15,4 +16,4 @@ export const router = {
 		GET: { one: read, many: list },
 		DELETE: { one: unsend },
 	},
-};
+});

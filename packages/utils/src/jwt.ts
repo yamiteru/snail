@@ -1,5 +1,5 @@
 import { jwtVerify, SignJWT } from "jose";
-import { textEncoder } from "./text";
+import { textEncoder } from "./constants";
 
 export { decodeJwt } from "jose";
 

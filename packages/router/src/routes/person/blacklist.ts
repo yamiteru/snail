@@ -1,13 +1,16 @@
-import { Handler } from "../../types";
-import { Blacklist } from "../../controllers";
-import { authorize } from "../../utils/authorize";
-import { email, object, validate } from "@snail/utils";
+import { authorize, handler } from "@utils";
+import { email, object } from "@snail/utils";
+import { BlacklistService } from "@services";
 
-const bodySchema = object({ email });
+export const blacklist = handler(
+	{
+		body: object({ email }),
+	},
+	async ({ body, headers }) => {
+		const { email } = await body();
+		const { me } = await authorize(headers());
+		const blacklistService = new BlacklistService();
 
-export const blacklist: Handler = async ({ body, headers }) => {
-	const { email } = validate(bodySchema, await body());
-	const { me } = await authorize(headers());
-
-	await Blacklist.add(me, email);
-};
+		await blacklistService.add(me, email);
+	},
+);

@@ -2,7 +2,13 @@
 	"extends": "@snail/tsconfig/tsconfig.core.json",
 	"compilerOptions": {
 		"lib": ["ESNext", "WebWorker"],
-		"types": ["cloudflare/worker-types"]
+		"types": ["cloudflare/worker-types"],
+		"baseUrl": ".",
+		"outDir": "dist",
+		"paths": {
+			"@utils": ["./src/utils/index.ts"],
+			"@services": ["./src/services/index.ts"]
+		}
 	},
 	"include": ["src", "tests", "@types"],
 	"exclude": ["node_modules"]

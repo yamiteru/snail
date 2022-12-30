@@ -5,6 +5,8 @@ build({
 	bundle: true,
 	sourcemap: true,
 	minify: true,
+	treeShaking: true,
+	splitting: true,
 	format: "esm",
 	target: "esnext",
 	conditions: ["worker", "browser"],

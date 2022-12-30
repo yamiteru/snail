@@ -1,37 +1,46 @@
 import { error } from "./error";
 
-type Validation<T> = (v: T) => undefined | null | false | void | string;
+type Validation<T> = (
+	v: T,
+) => undefined | null | false | void | Record<string, unknown>;
 
-export const type = <T>(...validations: Validation<any>[]) => {
+const type = <T>(...validations: Validation<any>[]) => {
 	const length = validations.length;
 
 	return (v: T) => {
 		for (let i = 0; i < length; ++i) {
-			const maybeErrorMessage = validations[i](v);
+			const maybeContext = validations[i](v);
 
-			error(!!maybeErrorMessage, "VALIDATION_ERROR", {
+			error(!!maybeContext, "VALIDATION_ERROR", {
 				input: v,
-				message: maybeErrorMessage as string,
+				...maybeContext,
 			});
 		}
 	};
 };
 
-export const is = (type: string) => (v: unknown) =>
-	typeof v !== type && `Should be of type ${type}`;
+export type Type<T> = ReturnType<typeof type<T>>;
 
-export const length = (number: number) => (v: unknown) =>
-	(v as string).length !== number && `Should have length of ${number}`;
+const is = (targetType: string) => (v: unknown) => {
+	const inputType = typeof v;
+	return inputType !== targetType && { inputType, targetType };
+};
+
+const length = (targetLength: number) => (v: unknown) => {
+	const inputLength = (v as string).length;
+	return inputLength !== targetLength && { inputLength, targetLength };
+};
 
 export const string = type<string>(is("string"));
 
 export const number = type<number>(is("number"));
 
-const emailRegExp = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegExp = new RegExp(emailPattern);
 
 export const email = type<string>(
 	string,
-	(v) => !emailRegExp.test(v as string) && "Should be an email",
+	(v) => !emailRegExp.test(v as string) && { regex: emailPattern },
 );
 
 export const code = type<string>(string, length(6));
@@ -44,7 +53,7 @@ export const object = <T extends Record<string, Validation<any>>>(schema: T) =>
 	}>(is("object"), (v) => {
 		for (const key in schema) {
 			if (!(key in (v as any))) {
-				return `Should have key ${key}`;
+				return { key, input: v };
 			}
 
 			schema[key]((v as any)[key]);
@@ -53,7 +62,7 @@ export const object = <T extends Record<string, Validation<any>>>(schema: T) =>
 
 export const array = <T>(validation: Validation<T>) =>
 	type<T[]>(
-		(v) => !Array.isArray(v) && `Should be of type array`,
+		(v) => !Array.isArray(v) && { inputType: typeof v, targetType: "array" },
 		(v) => {
 			const length = v.length;
 

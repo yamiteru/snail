@@ -1,14 +1,17 @@
-import { authorize } from "../../utils/authorize";
-import { Inbox } from "../../controllers";
-import { Handler } from "../../types";
-import { date, email, object, Seconds, validate } from "@snail/utils";
+import { authorize, handler } from "@utils";
+import { date, email, object, Time } from "@snail/utils";
+import { InboxService } from "@services";
 
-const bodySchema = object({ to: email, date });
+export const unsend = handler(
+	{
+		body: object({ to: email, date }),
+	},
+	async ({ body, headers }) => {
+		const { to, date } = await body();
+		const { me } = await authorize(headers());
+		const inboxService = new InboxService();
 
-export const unsend: Handler = async ({ body, headers }) => {
-	const { to, date } = validate(bodySchema, await body());
-	const { me } = await authorize(headers());
-
-	await Inbox.drop(to, me, date);
-	await Inbox.read(to, me, date, Seconds.minute);
-};
+		await inboxService.drop(to, me, date);
+		await inboxService.read(to, me, date, Time.minute.seconds);
+	},
+);

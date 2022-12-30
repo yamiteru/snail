@@ -1,29 +1,25 @@
-import {
-	email,
-	error,
-	generateLoginCode,
-	object,
-	validate,
-} from "@snail/utils";
-import { sendEmail } from "../../utils";
-import { Handler } from "../../types";
-import { Code, Person } from "../../controllers";
+import { email, error, generateLoginCode, object } from "@snail/utils";
+import { handler } from "@utils";
+import { CodeService, EmailService, PersonService } from "@services";
 
-const bodySchema = object({ email });
+export const code = handler(
+	{
+		body: object({ email }),
+	},
+	async ({ body }) => {
+		const emailService = new EmailService();
+		const personService = new PersonService();
+		const codeService = new CodeService();
+		const { email } = await body();
+		const person = await personService.read(email);
 
-export const code: Handler = async ({
-	body,
-	env: { SENDGRID_TEMPLATE_LOGIN_CODE },
-}) => {
-	const { email } = validate(bodySchema, await body());
-	const person = await Person.read(email);
+		error(person === null, "PERSON_DOES_NOT_EXIST", { email });
 
-	error(person === null, "PERSON_DOES_NOT_EXIST", { email });
+		const loginCode = generateLoginCode();
 
-	const loginCode = generateLoginCode();
-
-	await Promise.all([
-		sendEmail(SENDGRID_TEMPLATE_LOGIN_CODE, { loginCode }, email),
-		Code.create(email, loginCode),
-	]);
-};
+		await Promise.all([
+			emailService.code(email, { loginCode }),
+			codeService.create(email, loginCode),
+		]);
+	},
+);
