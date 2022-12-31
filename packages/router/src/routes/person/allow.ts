@@ -1,16 +1,16 @@
-import { authorize, handler } from "@utils";
-import { email, object } from "@snail/utils";
-import { BlacklistService } from "@services";
+import { mutate } from "@utils";
+import { authorized, email, none, object } from "@snail/utils";
+import { BlockedService } from "@services";
 
-export const allow = handler(
+export const allow = mutate(
 	{
-		body: object({ email }),
+		context: authorized,
+		input: object({ email }),
+		output: none,
 	},
-	async ({ body, headers }) => {
-		const { email } = await body();
-		const { me } = await authorize(headers());
-		const blacklistService = new BlacklistService();
+	async ({ email }, { auth: { me } }) => {
+		const blockedService = new BlockedService();
 
-		await blacklistService.remove(me, email);
+		await blockedService.remove(me, email);
 	},
 );

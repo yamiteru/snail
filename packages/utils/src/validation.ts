@@ -8,8 +8,8 @@ const type = <T>(...validations: Validation<any>[]) => {
 	const length = validations.length;
 
 	return (v: T) => {
-		for (let i = 0; i < length; ++i) {
-			const maybeContext = validations[i](v);
+		for (let i = -1; i < length; ++i) {
+			const maybeContext = validations[i]?.(v);
 
 			error(!!maybeContext, "VALIDATION_ERROR", {
 				input: v,
@@ -32,6 +32,8 @@ const length = (targetLength: number) => (v: unknown) => {
 };
 
 export const string = type<string>(is("string"));
+
+export const none = type<void>();
 
 export const number = type<number>(is("number"));
 
@@ -76,3 +78,7 @@ export const validate = <T>(validation: Validation<T>, data: unknown): T => {
 	validation(data as any);
 	return data as T;
 };
+
+export const authorized = object({
+	auth: object({ token: string, me: email }),
+});

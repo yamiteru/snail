@@ -44,6 +44,7 @@ importers:
   apps/cli:
     specifiers:
       '@snail/config': workspace:*
+      '@snail/router': workspace:*
       '@snail/tsconfig': workspace:*
       '@snail/types': workspace:*
       '@snail/utils': workspace:*
@@ -58,6 +59,7 @@ importers:
       ts-node: 10.9.1
       typescript: 4.9.4
     dependencies:
+      '@snail/router': link:../../packages/router
       dotenv: 16.0.3
       ink: 3.2.0_kzbn2opkn2327fwg5yzwzya5o4
       ink-select-input: 4.2.1_ink@3.2.0+react@18.2.0

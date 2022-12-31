@@ -1,10 +1,10 @@
-import { Handler } from "./handler";
+import { routerFactory } from "@snail/utils";
+import { Env } from "@snail/types";
 
-export const createRouter = <
-	T extends Record<
-		string,
-		Record<string, Record<string, Handler<any, any, any>>>
-	>,
->(
-	router: T,
-) => router;
+type Context = {
+	auth: { me: string; token: string };
+	request: { ip: string };
+	env: Env;
+};
+
+export const { router, query, mutate } = routerFactory<Context>();

@@ -1,13 +1,14 @@
-import { email, error, generateLoginCode, object } from "@snail/utils";
-import { handler } from "@utils";
+import { email, error, generateLoginCode, none, object } from "@snail/utils";
 import { CodeService, EmailService, PersonService } from "@services";
+import { mutate } from "@utils";
 
-export const register = handler(
+export const register = mutate(
 	{
-		body: object({ email }),
+		context: object({}),
+		input: object({ email }),
+		output: none,
 	},
-	async ({ body }) => {
-		const { email } = await body();
+	async ({ email }) => {
 		const emailService = new EmailService();
 		const personService = new PersonService();
 		const codeService = new CodeService();

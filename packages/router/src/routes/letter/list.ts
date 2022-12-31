@@ -1,20 +1,32 @@
-import { authorize, handler } from "@utils";
-import { array, date, email, number, object, string } from "@snail/utils";
+import { query } from "@utils";
+import {
+	array,
+	authorized,
+	date,
+	email,
+	none,
+	number,
+	object,
+	string,
+} from "@snail/utils";
 import { InboxService, TokenService } from "@services";
 
-export const list = handler(
+export const list = query(
 	{
-		output: array(
-			object({
-				from: email,
-				date,
-				words: number,
-				intro: string,
-			}),
-		),
+		context: authorized,
+		input: none,
+		output: object({
+			items: array(
+				object({
+					from: email,
+					date,
+					words: number,
+					intro: string,
+				}),
+			),
+		}),
 	},
-	async ({ headers }) => {
-		const { me, token } = await authorize(headers());
+	async (_, { auth: { me, token } }) => {
 		const inboxService = new InboxService();
 		const tokenService = new TokenService();
 		const [list] = await Promise.all([
@@ -22,7 +34,7 @@ export const list = handler(
 			tokenService.create(me, token),
 		]);
 		const length = list.keys.length;
-		const res = [];
+		const items = [];
 
 		for (let i = 0; i < length; ++i) {
 			const { name, metadata } = list.keys[i];
@@ -32,7 +44,7 @@ export const list = handler(
 			const words = (metadata as any)?.w;
 			const intro = (metadata as any)?.i;
 
-			res.push({
+			items.push({
 				from,
 				date,
 				words,
@@ -40,6 +52,6 @@ export const list = handler(
 			});
 		}
 
-		return res;
+		return { items };
 	},
 );

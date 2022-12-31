@@ -6,3 +6,4 @@ export * from "./constants";
 export * from "./validation";
 export * from "./request";
 export * from "./singleton";
+export * from "./router";

@@ -1,15 +1,18 @@
-import { authorize, handler } from "@utils";
-import { array, string } from "@snail/utils";
-import { BlacklistService } from "@services";
+import { query } from "@utils";
+import { array, authorized, none, object, string } from "@snail/utils";
+import { BlockedService } from "@services";
 
-export const blocked = handler(
+export const blocked = query(
 	{
-		output: array(string),
+		context: authorized,
+		input: none,
+		output: object({ items: array(string) }),
 	},
-	async ({ headers }) => {
-		const { me } = await authorize(headers());
-		const blacklistService = new BlacklistService();
+	async (_, { auth: { me } }) => {
+		const blockedService = new BlockedService();
+		const list = await blockedService.list(me);
+		const items = list.keys.map((v) => v.name);
 
-		return (await blacklistService.list(me)).keys.map((v) => v.name);
+		return { items };
 	},
 );

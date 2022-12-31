@@ -1,23 +1,28 @@
-import { authorize, handler } from "@utils";
-import { date, email, error, object, string } from "@snail/utils";
+import { query } from "@utils";
+import { authorized, date, email, error, object, string } from "@snail/utils";
 import { InboxService } from "@services";
 
-export const read = handler(
+export const read = query(
 	{
-		params: object({ from: email, date }),
-		output: string,
+		context: authorized,
+		input: object({ from: email, date }),
+		output: object({ content: string }),
 	},
-	async ({ headers, params }) => {
-		const { from, date } = params();
-		const { me } = await authorize(headers());
+	async ({ from, date }, { auth: { me } }) => {
 		const inboxService = new InboxService();
 
-		const letter = await inboxService.read(me, from, date);
+		const content = await inboxService.read(me, from, date);
 
-		error(letter === null, "LETTER_DOES_NOT_EXIST", { from, to: me, date });
+		error(content === null, "LETTER_DOES_NOT_EXIST", {
+			from,
+			to: me,
+			date,
+		});
 
 		await inboxService.drop(me, from, date);
 
-		return letter as string;
+		return {
+			content: content as string,
+		};
 	},
 );

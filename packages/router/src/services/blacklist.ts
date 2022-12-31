@@ -1,7 +1,7 @@
 import { AbstractKVService } from "./kv";
 import { KV, Time } from "@snail/utils";
 
-export class BlacklistService extends AbstractKVService {
+export class BlockedService extends AbstractKVService {
 	constructor() {
 		super("blacklist");
 	}

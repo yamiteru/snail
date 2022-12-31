@@ -7,16 +7,16 @@ import {
 	string,
 	Time,
 } from "@snail/utils";
-import { handler } from "@utils";
+import { mutate } from "@utils";
 import { CodeService, PersonService, TokenService } from "@services";
 
-export const login = handler(
+export const login = mutate(
 	{
-		body: object({ email, loginCode: code }),
-		output: string,
+		context: object({}),
+		input: object({ email, loginCode: code }),
+		output: object({ token: string }),
 	},
-	async ({ body, headers }) => {
-		const { email, loginCode } = await body();
+	async ({ email, loginCode }, { request: { ip } }) => {
 		const personService = new PersonService();
 		const codeService = new CodeService();
 		const tokenService = new TokenService();
@@ -29,7 +29,6 @@ export const login = handler(
 		error(code === null, "CODE_DOES_NOT_EXIST", { email });
 		error(code !== loginCode, "CODE_IS_INVALID", { email });
 
-		const ip = headers()["cf-connecting-ip"] || "0";
 		const expiration = new Date();
 
 		expiration.setDate(expiration.getDate() + 7);
@@ -52,6 +51,6 @@ export const login = handler(
 			await personService.read(email, Time.minute.seconds);
 		}
 
-		return token;
+		return { token };
 	},
 );

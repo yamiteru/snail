@@ -1,14 +1,14 @@
-import { authorize, handler } from "@utils";
-import { date, email, object, Time } from "@snail/utils";
+import { mutate } from "@utils";
+import { authorized, date, email, none, object, Time } from "@snail/utils";
 import { InboxService } from "@services";
 
-export const unsend = handler(
+export const unsend = mutate(
 	{
-		body: object({ to: email, date }),
+		context: authorized,
+		input: object({ to: email, date }),
+		output: none,
 	},
-	async ({ body, headers }) => {
-		const { to, date } = await body();
-		const { me } = await authorize(headers());
+	async ({ to, date }, { auth: { me } }) => {
 		const inboxService = new InboxService();
 
 		await inboxService.drop(to, me, date);
