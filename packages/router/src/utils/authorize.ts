@@ -1,6 +1,7 @@
 import { decodeJwt, error } from "@snail/utils";
 
 export const authorize = (async (headers: Record<string, string>) => {
+	console.log(headers);
 	const bearer = headers["authorization"];
 
 	error(!bearer, "TOKEN_IS_MISSING", null);

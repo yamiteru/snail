@@ -2,7 +2,7 @@ import { authorize, handler } from "@utils";
 import { email, object } from "@snail/utils";
 import { BlacklistService } from "@services";
 
-export const whitelist = handler(
+export const block = handler(
 	{
 		body: object({ email }),
 	},
@@ -11,6 +11,6 @@ export const whitelist = handler(
 		const { me } = await authorize(headers());
 		const blacklistService = new BlacklistService();
 
-		await blacklistService.remove(me, email);
+		await blacklistService.add(me, email);
 	},
 );

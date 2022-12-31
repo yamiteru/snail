@@ -1,6 +1,7 @@
 {
 	"name": "@snail/utils",
-  "main": "./src/index.ts",
+	"type": "module",
+	"main": "./src/index.ts",
   "types": "./src/index.ts",
 	"scripts": {
 		"lint": "eslint --fix --ext .ts,.tsx .",

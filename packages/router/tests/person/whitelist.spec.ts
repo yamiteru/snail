@@ -2,7 +2,7 @@ import { beforeAll, expect, it } from "vitest";
 import { call, getRandomEmailTuples, setSendEmail } from "../../src";
 import { Nullable } from "@snail/types";
 import { login, register } from "../../src/routes/auth";
-import { blacklist, whitelist } from "../../src/routes/person";
+import { allow, block } from "../../src/routes/person";
 
 const codes = new Map<string, (value: string) => void>();
 
@@ -26,13 +26,13 @@ setupMiniflareIsolatedStorage()("person/whitelist", () => {
 
 		const token = await call(login, { body: { email: b, loginCode } });
 
-		await call(blacklist, {
+		await call(block, {
 			body: { email: a },
 			headers: { authorization: `Bearer ${token}` },
 		});
 
 		await expect(
-			call(whitelist, {
+			call(allow, {
 				body: { email: a },
 				headers: { authorization: `Bearer ${token}` },
 			}),

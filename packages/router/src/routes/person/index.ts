@@ -1,3 +1,4 @@
-export * from "./blacklist";
-export * from "./whitelist";
+export * from "./block";
+export * from "./allow";
 export * from "./remove";
+export * from "./blocked";

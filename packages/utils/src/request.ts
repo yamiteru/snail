@@ -1,7 +1,9 @@
-export const getHeaders = (request: Request) => {
+export const getHeaders = (request: any) => {
 	const headers: Record<string, string> = {};
 
-	request.headers.forEach((key, value) => (headers[key] = value));
+	request.headers.forEach(
+		(value: string, key: string) => (headers[key] = value),
+	);
 
 	return headers;
 };

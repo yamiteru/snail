@@ -1,9 +1,9 @@
-name = "slowco"
-main = "dist/index.js"
+name = "snail"
+main = "dist/index.mjs"
 compatibility_date = "2022-12-24"
 
 kv_namespaces = [
-  { binding = "KV", id = "c9b1585772bd4c43be23d7d7f95bdb1c" }
+  { binding = "KV", id = "f86c2743d9e74b15a15d87244880a34d" }
 ]
 
 [build]

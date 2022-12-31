@@ -1,3 +1,31 @@
 {
-  "name": "cli"
+	"name": "@snail/cli",
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"bin": {
+		"snail": "./dist/index.js"
+	},
+	"scripts": {
+		"dev": "node --loader ts-node/esm --experimental-specifier-resolution=node src/index.ts",
+		"local": "pnpm build && npm i -g"
+	},
+	"devDependencies": {
+		"@snail/config": "workspace:*",
+		"@snail/tsconfig": "workspace:*",
+		"@snail/types": "workspace:*",
+		"@snail/utils": "workspace:*",
+		"@types/node": "18.11.18",
+		"@types/react": "18.0.26",
+		"esbuild": "0.16.10",
+		"ts-node": "10.9.1",
+		"typescript": "4.9.4"
+	},
+	"dependencies": {
+		"dotenv": "16.0.3",
+		"ink": "3.2.0",
+		"ink-select-input": "4.2.1",
+		"node-fetch": "3.3.0",
+		"react": "18.2.0"
+	}
 }

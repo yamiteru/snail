@@ -1,11 +1,11 @@
 import { Env } from "@snail/types";
 import { router } from "@snail/router";
-import { LogService } from "@snail/router/src/services/log";
 
 export default {
 	async fetch(request: Request, env: Env) {
-		const logService = new LogService();
 		const url = new URL(request.url);
+
+		// request.headers.forEach(console.log);
 
 		try {
 			(global as any).bindings = env;
@@ -14,20 +14,14 @@ export default {
 			const handler = (router as any)?.[a]?.[request.method]?.[b];
 			const output = await (handler as any)(request, env);
 
-			const x = await logService.info(output);
-
-			console.log(x);
-
+			console.log(output);
 			return new Response(
 				JSON.stringify({
 					data: output || null,
 				}),
 			);
 		} catch (e: any) {
-			const x = await logService.error(e);
-
-			console.log(x);
-
+			console.log(e);
 			return new Response(
 				JSON.stringify({
 					error: e,

@@ -6,8 +6,10 @@
 		"strict": true,
 		"moduleResolution": "node",
 		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
 		"resolveJsonModule": true,
-		"noEmit": true,
+		"noEmit": false,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
 		"checkJs": false
