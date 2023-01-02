@@ -3,7 +3,7 @@ import { read } from "./read";
 import { send } from "./send";
 import { unsend } from "./unsend";
 
-const Letter = {
+export const Letter = {
 	list,
 	read,
 	send,

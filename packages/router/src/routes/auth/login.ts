@@ -1,13 +1,3 @@
-import { IpContext, ipContext, mutate } from "@utils";
-import {
-	code,
-	createJwt,
-	email,
-	error,
-	minute,
-	object,
-	string,
-} from "@snail/utils";
 import {
 	codeDelete,
 	codeRead,
@@ -15,16 +5,14 @@ import {
 	personUpsert,
 	tokenCreate,
 } from "@services";
+import { object, string } from "zod";
+import { createJwt, error, minute } from "@snail/utils";
+import { publicRoute } from "@utils";
 
-export const login = mutate<
-	{ email: string; loginCode: string },
-	{ token: string },
-	IpContext
->({
-	input: object({ email, loginCode: code }),
-	output: object({ token: string }),
-	context: ipContext,
-	handler: async ({ email, loginCode }, { ip }) => {
+export const login = publicRoute
+	.input(object({ email: string().email(), loginCode: string() }))
+	.output(object({ token: string() }))
+	.mutation(async ({ input: { email, loginCode }, ctx: { ip } }) => {
 		const person = await personRead(email);
 
 		error(person === null, "PERSON_DOES_NOT_EXIST", { email });
@@ -57,5 +45,4 @@ export const login = mutate<
 		}
 
 		return { token };
-	},
-});
+	});

@@ -1,9 +1,9 @@
 import Auth from "./auth";
-import { router } from "@utils";
 import Letter from "./letter";
 import Person from "./person";
+import { t } from "@utils";
 
-export const appRouter = router({
+export const appRouter = t.router({
 	// AUTH
 	"auth-register": Auth.register,
 	"auth-code": Auth.code,

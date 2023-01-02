@@ -1,11 +1,16 @@
-import { authContext, AuthContext, mutate } from "@utils";
 import { blockedAdd } from "@services";
-import { email, object } from "@snail/utils";
+import { object, string } from "zod";
+import { privateRoute } from "@utils";
 
-export const block = mutate<{ email: string }, void, AuthContext>({
-	context: authContext,
-	input: object({ email }),
-	handler: async ({ email }, { me }) => {
-		await blockedAdd(me, email);
-	},
-});
+export const block = privateRoute
+	.input(object({ email: string().email() }))
+	.mutation(
+		async ({
+			input: { email },
+			ctx: {
+				user: { email: me },
+			},
+		}) => {
+			await blockedAdd(me, email);
+		},
+	);

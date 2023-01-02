@@ -3,7 +3,7 @@ import { block } from "./block";
 import { blocked } from "./blocked";
 import { remove } from "./remove";
 
-const Person = {
+export const Person = {
 	allow,
 	block,
 	blocked,

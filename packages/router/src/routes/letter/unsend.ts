@@ -1,12 +1,18 @@
-import { AuthContext, authContext, mutate } from "@utils";
-import { date, email, minute, object } from "@snail/utils";
 import { letterDelete, letterRead } from "@services";
+import { object, string } from "zod";
+import { minute } from "@snail/utils";
+import { privateRoute } from "@utils";
 
-export const unsend = mutate<{ to: string; date: string }, void, AuthContext>({
-	context: authContext,
-	input: object({ to: email, date }),
-	handler: async ({ to, date }, { me }) => {
-		await letterDelete(to, me, date);
-		await letterRead(to, me, date, minute);
-	},
-});
+export const unsend = privateRoute
+	.input(object({ to: string().email(), date: string() }))
+	.mutation(
+		async ({
+			input: { to, date },
+			ctx: {
+				user: { email },
+			},
+		}) => {
+			await letterDelete(to, email, date);
+			await letterRead(to, email, date, minute);
+		},
+	);

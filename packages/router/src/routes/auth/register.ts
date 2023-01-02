@@ -1,14 +1,21 @@
-import { email, error, generateLoginCode, object } from "@snail/utils";
-import { mutate } from "@utils";
 import { codeCreate, EmailService, personCreate, personRead } from "@services";
+import { generateLoginCode } from "@snail/utils";
+import { object, string } from "zod";
+import { publicRoute } from "@utils";
+import { TRPCError } from "@trpc/server";
 
-export const register = mutate<{ email: string }>({
-	input: object({ email }),
-	handler: async ({ email }) => {
+export const register = publicRoute
+	.input(object({ email: string().email() }))
+	.mutation(async ({ input: { email } }) => {
 		const emailService = new EmailService();
 		const person = await personRead(email);
 
-		error(person !== null, "PERSON_ALREADY_EXISTS", { email });
+		if (person !== null) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "User already exists",
+			});
+		}
 
 		const loginCode = generateLoginCode();
 
@@ -17,5 +24,4 @@ export const register = mutate<{ email: string }>({
 			codeCreate(email, loginCode),
 			personCreate(email),
 		]);
-	},
-});
+	});

@@ -1,16 +1,20 @@
-import { authContext, AuthContext, mutate } from "@utils";
 import { blockedList, letterList, personDelete, tokenList } from "@services";
+import { privateRoute } from "@utils";
 
-export const remove = mutate<undefined, void, AuthContext>({
-	context: authContext,
-	handler: async (_, { me }) => {
+export const remove = privateRoute.mutation(
+	async ({
+		ctx: {
+			user: { email },
+		},
+	}) => {
+		console.log("H", { email });
 		const lists = await Promise.all([
-			letterList(me),
-			blockedList(me),
-			tokenList(me),
+			letterList(email),
+			blockedList(email),
+			tokenList(email),
 		]);
 
-		const promises: Promise<unknown>[] = [personDelete(me)];
+		const promises: Promise<unknown>[] = [personDelete(email)];
 
 		for (const list of lists) {
 			const length = list.keys.length;
@@ -22,4 +26,4 @@ export const remove = mutate<undefined, void, AuthContext>({
 
 		await Promise.all(promises);
 	},
-});
+);

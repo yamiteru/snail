@@ -24,7 +24,6 @@
 	"dependencies": {
 		"@snail/router": "workspace:*",
 		"@snail/utils": "workspace:*",
-		"trpc": "^0.11.3",
-		"zod": "^3.20.2"
+		"@trpc/server": "^10.7.0"
 	}
 }

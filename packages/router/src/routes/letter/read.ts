@@ -1,28 +1,30 @@
-import { authContext, AuthContext, query } from "@utils";
-import { date, email, error, object, string } from "@snail/utils";
 import { letterDelete, letterRead } from "@services";
+import { object, string } from "zod";
+import { error } from "@snail/utils";
+import { privateRoute } from "@utils";
 
-export const read = query<
-	{ from: string; date: string },
-	{ content: string },
-	AuthContext
->({
-	context: authContext,
-	input: object({ from: email, date }),
-	output: object({ content: string }),
-	handler: async ({ from, date }, { me }) => {
-		const content = await letterRead(me, from, date);
+export const read = privateRoute
+	.input(object({ from: string().email(), date: string() }))
+	.output(object({ content: string() }))
+	.query(
+		async ({
+			input: { from, date },
+			ctx: {
+				user: { email },
+			},
+		}) => {
+			const content = await letterRead(email, from, date);
 
-		error(content === null, "LETTER_DOES_NOT_EXIST", {
-			from,
-			to: me,
-			date,
-		});
+			error(content === null, "LETTER_DOES_NOT_EXIST", {
+				from,
+				to: email,
+				date,
+			});
 
-		await letterDelete(me, from, date);
+			await letterDelete(email, from, date);
 
-		return {
-			content: content as string,
-		};
-	},
-});
+			return {
+				content: content as string,
+			};
+		},
+	);

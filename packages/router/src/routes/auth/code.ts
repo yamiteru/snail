@@ -1,10 +1,11 @@
-import { email, error, generateLoginCode, object } from "@snail/utils";
-import { mutate } from "@utils";
+import { error, generateLoginCode } from "@snail/utils";
 import { codeCreate, EmailService, personRead } from "@services";
+import { object, string } from "zod";
+import { publicRoute } from "@utils";
 
-export const code = mutate<{ email: string }>({
-	input: object({ email }),
-	handler: async ({ email }) => {
+export const code = publicRoute
+	.input(object({ email: string() }))
+	.mutation(async ({ input: { email } }) => {
 		const emailService = new EmailService();
 		const person = await personRead(email);
 
@@ -16,5 +17,4 @@ export const code = mutate<{ email: string }>({
 			emailService.code(email, { loginCode }),
 			codeCreate(email, loginCode),
 		]);
-	},
-});
+	});

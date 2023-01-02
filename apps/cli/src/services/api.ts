@@ -1,70 +1,29 @@
-import { Singleton } from "@snail/utils";
-import fetch from "node-fetch";
-import { StoreService } from "./store";
+import { mutate, query } from "../utils/fetcher";
 
-export class ApiService extends Singleton {
-	constructor() {
-		super("api");
-	}
+export const authRegister = (email: string) => mutate("auth-register", {});
 
-	register(email: string) {
-		return this.send("POST", "auth/register", { email });
-	}
+export const authLogin = (email: string, loginCode: string) =>
+	mutate("auth-login", { email, loginCode });
 
-	login(email: string, loginCode: string) {
-		return this.send("POST", "auth/login", { email, loginCode });
-	}
+export const authCode = (email: string) => mutate("auth-code", { email });
 
-	code(email: string) {
-		return this.send("POST", "auth/code", { email });
-	}
+export const blockedDelete = (email: string, token: string) =>
+	mutate("person-allow", { email }, token);
 
-	allow(email: string) {
-		return this.send("POST", "person/whitelist", { email });
-	}
+export const blockedAdd = (email: string, token: string) =>
+	mutate("person-block", { email }, token);
 
-	block(email: string) {
-		return this.send("POST", "person/blacklist", { email });
-	}
+export const blockedList = (token: string) =>
+	mutate("person-blocked", null, token);
 
-	blocked() {
-		return this.send("GET", "person/blocked");
-	}
+export const letterList = (email: string, token: string) =>
+	query("letter-list", { lol: "" }, token);
 
-	inbox(email: string) {
-		return this.send("GET", `letter/inbox?email=${email}`);
-	}
+export const letterSend = (to: string, content: string, token: string) =>
+	mutate("letter-send", { to, content }, token);
 
-	letterSend(to: string, content: string) {
-		return this.send("POST", "letter/one", { to, content });
-	}
+export const letterDelete = (to: string, date: string, token: string) =>
+	mutate("letter-unsend", { to, date }, token);
 
-	letterUnsend(to: string, date: string) {
-		return this.send("DELETE", "letter/one", { to, date });
-	}
-
-	letterRead(from: string, date: string) {
-		return this.send("GET", `letter/one?from=${from}&date=${date}`);
-	}
-
-	private async send(
-		method: string,
-		url: string,
-		data?: unknown,
-	): Promise<
-		{ data: unknown } | { error: { reason: string; [key: string]: unknown } }
-	> {
-		const storeService = new StoreService();
-		const { token } = await storeService.readCustomConfig();
-
-		const response = await fetch(`${process.env.API_URL}/${url}`, {
-			method,
-			...(data && method !== "GET" ? { body: JSON.stringify(data) } : {}),
-			headers: {
-				authorization: `Bearer ${token}`,
-			},
-		});
-
-		return (await response.json()) as any;
-	}
-}
+export const letterRead = (from: string, date: string, token: string) =>
+	query("letter-read", { from, date }, token);
