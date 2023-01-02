@@ -1,16 +1,11 @@
-import { mutate } from "@utils";
-import { authorized, email, none, object } from "@snail/utils";
-import { BlockedService } from "@services";
+import { authContext, AuthContext, mutate } from "@utils";
+import { blockedAdd } from "@services";
+import { email, object } from "@snail/utils";
 
-export const block = mutate(
-	{
-		context: authorized,
-		input: object({ email }),
-		output: none,
+export const block = mutate<{ email: string }, void, AuthContext>({
+	context: authContext,
+	input: object({ email }),
+	handler: async ({ email }, { me }) => {
+		await blockedAdd(me, email);
 	},
-	async ({ email }, { auth: { me } }) => {
-		const blockedService = new BlockedService();
-
-		await blockedService.add(me, email);
-	},
-);
+});

@@ -1,19 +1,12 @@
-import { email, error, generateLoginCode, none, object } from "@snail/utils";
-import { CodeService, EmailService, PersonService } from "@services";
+import { email, error, generateLoginCode, object } from "@snail/utils";
 import { mutate } from "@utils";
+import { codeCreate, EmailService, personCreate, personRead } from "@services";
 
-export const register = mutate(
-	{
-		context: object({}),
-		input: object({ email }),
-		output: none,
-	},
-	async ({ email }) => {
+export const register = mutate<{ email: string }>({
+	input: object({ email }),
+	handler: async ({ email }) => {
 		const emailService = new EmailService();
-		const personService = new PersonService();
-		const codeService = new CodeService();
-
-		const person = await personService.read(email);
+		const person = await personRead(email);
 
 		error(person !== null, "PERSON_ALREADY_EXISTS", { email });
 
@@ -21,8 +14,8 @@ export const register = mutate(
 
 		await Promise.all([
 			emailService.code(email, { loginCode }),
-			codeService.create(email, loginCode),
-			personService.create(email),
+			codeCreate(email, loginCode),
+			personCreate(email),
 		]);
 	},
-);
+});

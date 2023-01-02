@@ -1,17 +1,12 @@
-import { mutate } from "@utils";
-import { authorized, date, email, none, object, Time } from "@snail/utils";
-import { InboxService } from "@services";
+import { AuthContext, authContext, mutate } from "@utils";
+import { date, email, minute, object } from "@snail/utils";
+import { letterDelete, letterRead } from "@services";
 
-export const unsend = mutate(
-	{
-		context: authorized,
-		input: object({ to: email, date }),
-		output: none,
+export const unsend = mutate<{ to: string; date: string }, void, AuthContext>({
+	context: authContext,
+	input: object({ to: email, date }),
+	handler: async ({ to, date }, { me }) => {
+		await letterDelete(to, me, date);
+		await letterRead(to, me, date, minute);
 	},
-	async ({ to, date }, { auth: { me } }) => {
-		const inboxService = new InboxService();
-
-		await inboxService.drop(to, me, date);
-		await inboxService.read(to, me, date, Time.minute.seconds);
-	},
-);
+});

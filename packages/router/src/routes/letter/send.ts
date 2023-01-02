@@ -1,26 +1,18 @@
-import {
-	authorized,
-	date,
-	dateKey,
-	email,
-	error,
-	object,
-	string,
-} from "@snail/utils";
-import { mutate } from "@utils";
-import { BlockedService, InboxService } from "@services";
+import { authContext, AuthContext, mutate } from "@utils";
+import { date, dateKey, email, error, object, string } from "@snail/utils";
+import { blockedRead, letterCreate, letterRead } from "@services";
 
-export const send = mutate(
-	{
-		context: authorized,
-		input: object({ to: email, content: string }),
-		output: object({ date }),
-	},
-	async ({ to, content }, { auth: { me } }) => {
-		const blacklistService = new BlockedService();
-		const inboxService = new InboxService();
+export const send = mutate<
+	{ to: string; content: string },
+	{ date: string },
+	AuthContext
+>({
+	context: authContext,
+	input: object({ to: email, content: string }),
+	output: object({ date }),
+	handler: async ({ to, content }, { me }) => {
 		const date = dateKey();
-		const letterFromToday = await inboxService.read(to, me, date);
+		const letterFromToday = await letterRead(to, me, date);
 
 		error(letterFromToday !== null, "OUT_OF_LETTERS", {
 			from: me,
@@ -28,17 +20,17 @@ export const send = mutate(
 			date,
 		});
 
-		const blacklistedUser = await blacklistService.read(to, me);
+		const blacklistedUser = await blockedRead(to, me);
 
 		error(!!blacklistedUser, "PERSON_BLACKLISTED", {
 			target: me,
 			by: to,
 		});
 
-		await inboxService.create(to, me, date, content);
+		await letterCreate(to, me, date, content);
 
 		return {
 			date,
 		};
 	},
-);
+});

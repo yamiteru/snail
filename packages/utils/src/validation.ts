@@ -1,34 +1,52 @@
 import { error } from "./error";
 
-type Validation<T> = (
-	v: T,
-) => undefined | null | false | void | Record<string, unknown>;
+export type Validation<T = any> = (v: unknown) => T;
 
-const type = <T>(...validations: Validation<any>[]) => {
+export type InferValidation<T extends Validation> = T extends Validation<
+	infer X
+>
+	? X
+	: never;
+
+export type ValidationObject = Record<string, Validation>;
+
+export type InferValidationObject<T extends ValidationObject> = {
+	[K in keyof T]: InferValidation<T[K]>;
+};
+
+const type = <T>(...validations: Validation[]) => {
 	const length = validations.length;
 
-	return (v: T) => {
-		for (let i = -1; i < length; ++i) {
-			const maybeContext = validations[i]?.(v);
-
-			error(!!maybeContext, "VALIDATION_ERROR", {
+	return (v: unknown) => {
+		try {
+			for (let i = -1; i < length; ++i) {
+				validations[i]?.(v);
+			}
+		} catch (e) {
+			error(true, "VALIDATION_ERROR", {
 				input: v,
-				...maybeContext,
+				...(e as Record<string, unknown>),
 			});
 		}
+
+		return v as T;
 	};
 };
 
-export type Type<T> = ReturnType<typeof type<T>>;
-
 const is = (targetType: string) => (v: unknown) => {
 	const inputType = typeof v;
-	return inputType !== targetType && { inputType, targetType };
+
+	if (inputType !== targetType) {
+		throw { inputType, targetType };
+	}
 };
 
 const length = (targetLength: number) => (v: unknown) => {
-	const inputLength = (v as string).length;
-	return inputLength !== targetLength && { inputLength, targetLength };
+	const inputLength = (v as any[]).length;
+
+	if (inputLength !== targetLength) {
+		throw { inputLength, targetLength };
+	}
 };
 
 export const string = type<string>(is("string"));
@@ -40,45 +58,46 @@ export const number = type<number>(is("number"));
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const emailRegExp = new RegExp(emailPattern);
 
-export const email = type<string>(
-	string,
-	(v) => !emailRegExp.test(v as string) && { regex: emailPattern },
-);
+export const email = type<string>(string, (v) => {
+	if (!emailRegExp.test(v as string)) {
+		throw { regex: emailPattern };
+	}
+});
 
 export const code = type<string>(string, length(6));
 
 export const date = type<string>(string, length(8));
 
-export const object = <T extends Record<string, Validation<any>>>(schema: T) =>
-	type<{
-		[K in keyof T]: T[K] extends Validation<infer X> ? X : never;
-	}>(is("object"), (v) => {
+export const object = <
+	T extends ValidationObject,
+	D extends InferValidationObject<T>,
+>(
+	schema: T,
+) =>
+	type<D>(is("object"), (v) => {
 		for (const key in schema) {
-			if (!(key in (v as any))) {
-				return { key, input: v };
+			if (!(key in (v as D))) {
+				throw { key, input: v };
 			}
 
-			schema[key]((v as any)[key]);
+			schema[key]((v as D)[key]);
 		}
 	});
 
 export const array = <T>(validation: Validation<T>) =>
-	type<T[]>(
-		(v) => !Array.isArray(v) && { inputType: typeof v, targetType: "array" },
-		(v) => {
-			const length = v.length;
+	type<T[]>((v) => {
+		if (!Array.isArray(v)) {
+			throw { inputType: typeof v, targetType: "array" };
+		}
 
-			for (let i = 0; i < length; ++i) {
-				validation(v[i]);
-			}
-		},
-	);
+		const length = (v as T[]).length;
+
+		for (let i = 0; i < length; ++i) {
+			validation((v as T[])[i]);
+		}
+	});
 
 export const validate = <T>(validation: Validation<T>, data: unknown): T => {
 	validation(data as any);
 	return data as T;
 };
-
-export const authorized = object({
-	auth: object({ token: string, me: email }),
-});

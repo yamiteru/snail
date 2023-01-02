@@ -1,8 +1,7 @@
-import { router } from "@utils";
 import Auth from "./auth";
+import { router } from "@utils";
 import Letter from "./letter";
 import Person from "./person";
-import { PickRouteType } from "@snail/utils";
 
 export const appRouter = router({
 	// AUTH
@@ -22,5 +21,3 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
-
-type X = keyof PickRouteType<"mutate", AppRouter>;

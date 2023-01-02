@@ -1,24 +1,12 @@
-import { AbstractKVService } from "./kv";
-import { KV, Time } from "@snail/utils";
+import { personKey, year } from "@snail/utils";
 
-export class PersonService extends AbstractKVService {
-	constructor() {
-		super("person");
-	}
+export const personCreate = (me: string) =>
+	bindings.KV.put(personKey(me), "", { metadata: { c: Date.now() } });
 
-	create(me: string) {
-		return this.KV.put(KV.key.person(me), "", { metadata: { c: Date.now() } });
-	}
+export const personRead = (me: string, cache = year) =>
+	bindings.KV.get(personKey(me), { cacheTtl: cache });
 
-	read(me: string, cache = Time.year.seconds) {
-		return this.KV.get(KV.key.person(me), { cacheTtl: cache });
-	}
+export const personUpsert = (me: string, secret: string) =>
+	bindings.KV.put(personKey(me), secret);
 
-	upsert(me: string, secret: string) {
-		return this.KV.put(KV.key.person(me), secret);
-	}
-
-	drop(me: string) {
-		return this.KV.delete(KV.key.person(me));
-	}
-}
+export const personDelete = (me: string) => bindings.KV.delete(personKey(me));

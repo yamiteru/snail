@@ -9,6 +9,7 @@ type Error = {
 	OUT_OF_LETTERS: { from: string; to: string; date: string };
 	PERSON_BLACKLISTED: { target: string; by: string };
 	VALIDATION_ERROR: { input: unknown; [key: string]: unknown };
+	ROUTE_METHOD_MISMATCH: { method: string; type: string };
 };
 
 export const error = <T extends keyof Error>(

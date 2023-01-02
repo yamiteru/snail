@@ -1,22 +1,10 @@
-import { AbstractKVService } from "./kv";
-import { KV, Time } from "@snail/utils";
+import { codeKey, minute } from "@snail/utils";
 
-export class CodeService extends AbstractKVService {
-	constructor() {
-		super("code");
-	}
+export const codeCreate = (me: string, code: string) =>
+	bindings.KV.put(codeKey(me), code, {
+		expirationTtl: minute * 5,
+	});
 
-	create(me: string, code: string) {
-		return this.KV.put(KV.key.code(me), code, {
-			expirationTtl: Time.minute.seconds * 5,
-		});
-	}
+export const codeRead = (me: string) => bindings.KV.get(codeKey(me));
 
-	read(me: string) {
-		return this.KV.get(KV.key.code(me));
-	}
-
-	drop(me: string) {
-		return this.KV.delete(KV.key.code(me));
-	}
-}
+export const codeDelete = (me: string) => bindings.KV.delete(codeKey(me));

@@ -1,18 +1,9 @@
-import { AbstractKVService } from "./kv";
-import { KV, Time } from "@snail/utils";
+import { tokenKey, week } from "@snail/utils";
 
-export class TokenService extends AbstractKVService {
-	constructor() {
-		super("token");
-	}
+export const tokenCreate = (me: string, token: string) =>
+	bindings.KV.put(tokenKey(me, token), "", {
+		expirationTtl: week,
+	});
 
-	create(me: string, token: string) {
-		return this.KV.put(KV.key.token(me, token), "", {
-			expirationTtl: Time.week.seconds,
-		});
-	}
-
-	list(me: string) {
-		return this.KV.list({ prefix: KV.key.token(me) });
-	}
-}
+export const tokenList = (me: string) =>
+	bindings.KV.list({ prefix: tokenKey(me) });

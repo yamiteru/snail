@@ -1,38 +1,26 @@
-import { query } from "@utils";
-import {
-	array,
-	authorized,
-	date,
-	email,
-	none,
-	number,
-	object,
-	string,
-} from "@snail/utils";
-import { InboxService, TokenService } from "@services";
+import { authContext, AuthContext, query } from "@utils";
+import { array, date, email, number, object, string } from "@snail/utils";
+import { letterList, tokenCreate } from "@services";
 
-export const list = query(
-	{
-		context: authorized,
-		input: none,
-		output: object({
-			items: array(
-				object({
-					from: email,
-					date,
-					words: number,
-					intro: string,
-				}),
-			),
-		}),
-	},
-	async (_, { auth: { me, token } }) => {
-		const inboxService = new InboxService();
-		const tokenService = new TokenService();
-		const [list] = await Promise.all([
-			inboxService.list(me),
-			tokenService.create(me, token),
-		]);
+export const list = query<
+	undefined,
+	{ items: { from: string; date: string; words: number; intro: string }[] },
+	AuthContext
+>({
+	context: authContext,
+	output: object({
+		items: array(
+			object({
+				from: email,
+				date,
+				words: number,
+				intro: string,
+			}),
+		),
+	}),
+	handler: async (_, { me, token }) => {
+		const [list] = await Promise.all([letterList(me), tokenCreate(me, token)]);
+
 		const length = list.keys.length;
 		const items = [];
 
@@ -54,4 +42,4 @@ export const list = query(
 
 		return { items };
 	},
-);
+});
