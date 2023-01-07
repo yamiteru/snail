@@ -6,8 +6,9 @@ import {
 	tokenCreate,
 } from "@services";
 import { object, string } from "zod";
-import { createJwt, error, minute } from "@snail/utils";
+import { createJwt, minute } from "@snail/utils";
 import { publicRoute } from "@utils";
+import { TRPCError } from "@trpc/server";
 
 export const login = publicRoute
 	.input(object({ email: string().email(), loginCode: string() }))
@@ -15,12 +16,28 @@ export const login = publicRoute
 	.mutation(async ({ input: { email, loginCode }, ctx: { ip } }) => {
 		const person = await personRead(email);
 
-		error(person === null, "PERSON_DOES_NOT_EXIST", { email });
+		if (person === null) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "User does not exist",
+			});
+		}
 
 		const code = await codeRead(email);
 
-		error(code === null, "CODE_DOES_NOT_EXIST", { email });
-		error(code !== loginCode, "CODE_IS_INVALID", { email });
+		if (code === null) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Code does not exist",
+			});
+		}
+
+		if (code !== loginCode) {
+			throw new TRPCError({
+				code: "INTERNAL_SERVER_ERROR",
+				message: "Code is invalid",
+			});
+		}
 
 		const expiration = new Date();
 
